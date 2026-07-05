@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Resume Result{% endblock %}
+
+{% block content %}
+
+<div class="row mt-4">
+
+    <!-- ATS SCORE CARD -->
+    <div class="col-md-4">
+        <div class="glass text-center p-4">
+            <h5>📊 ATS Score</h5>
+            <h1 class="text-info">{{ result.ats_score|default:"0" }}</h1>
+        </div>
+    </div>
+
+    <!-- JOB FIT -->
+    <div class="col-md-4">
+        <div class="glass text-center p-4">
+            <h5>💼 Job Fit</h5>
+
+            <div class="mt-2">
+                {% if result.job_role_fit %}
+                    {% for role in result.job_role_fit %}
+                        <span class="badge bg-success m-1">{{ role }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="text-muted">No data</span>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EXPERIENCE LEVEL -->
+    <div class="col-md-4">
+        <div class="glass text-center p-4">
+            <h5>📈 Experience Level</h5>
+            <h4>{{ result.experience_level|default:"N/A" }}</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- SCORE GRAPH -->
+<div class="glass text-center mt-4 p-4">
+
+    <h5>🎯 ATS Score Visualization</h5>
+
+    <canvas id="scoreChart" width="200" height="200"></canvas>
+
+</div>
+
+<!-- SKILLS SECTION -->
+<div class="row mt-4">
+
+    <!-- SKILLS FOUND -->
+    <div class="col-md-6">
+        <div class="glass p-4">
+
+            <h5>✅ Skills Found</h5>
+
+            {% if result.technical_skills %}
+                {% for skill in result.technical_skills %}
+                    <span class="badge bg-info text-dark m-1">{{ skill }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No skills detected</span>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- MISSING SKILLS -->
+    <div class="col-md-6">
+        <div class="glass p-4">
+
+            <h5>❌ Missing Skills</h5>
+
+            {% if result.missing_skills %}
+                {% for skill in result.missing_skills %}
+                    <span class="badge bg-danger m-1">{{ skill }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">None</span>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<!-- AI IMPROVEMENTS -->
+<div class="glass mt-4 p-4">
+
+    <h5>🧠 AI Suggestions</h5>
+
+    <ul>
+        {% for item in result.improvements %}
+            <li>{{ item }}</li>
+        {% empty %}
+            <li>No suggestions available</li>
+        {% endfor %}
+    </ul>
+
+</div>
+
+<!-- SUMMARY -->
+<div class="glass mt-4 p-4">
+
+    <h5>📄 Summary</h5>
+    <p>{{ result.summary|default:"No summary available" }}</p>
+
+</div>
+<a href="{% url 'download_pdf' %}" class="btn btn-success mt-3 w-100">
+    📄 Download PDF Report
+</a>
+
+
+
+<!-- BACK BUTTON -->
+<a href="/" class="btn btn-primary mt-4 w-100">
+    🔁 Analyze Another Resume
+</a>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const score = parseInt("{{ result.ats_score|default:'0' }}") || 0;
+
+    new Chart(document.getElementById('scoreChart'), {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [score, 100 - score],
+                backgroundColor: ['#38bdf8', '#1e293b'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '75%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

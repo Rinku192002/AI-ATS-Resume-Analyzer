@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Resume{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Upload Resume</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="mb-3">
+            <label class="form-label"><b>Paste Job Description</b></label>
+
+            <textarea
+                name="job_description"
+                class="form-control"
+                rows="8"
+                placeholder="Paste Job Description Here..."
+            ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Analyze Resume
+        </button>
+
+    </form>
+
+    {% if text %}
+
+    <hr>
+
+    <h3>Extracted Resume Text</h3>
+
+    <div class="border rounded p-3 bg-light" style="max-height:300px; overflow:auto;">
+        <pre>{{ text }}</pre>
+    </div>
+
+    {% endif %}
+
+
+    {% if ai_result %}
+
+    <hr>
+
+    <h2 class="text-primary">AI ATS Resume Analysis</h2>
+
+    <div class="card shadow mt-3">
+
+        <div class="card-body">
+
+            <h4>ATS Score</h4>
+
+            <div class="progress mb-4" style="height:30px;">
+
+                <div
+                    class="progress-bar bg-success"
+                    role="progressbar"
+                    style="width: {{ ai_result.ats_score }}%;"
+                >
+                    {{ ai_result.ats_score }}/100
+                </div>
+
+            </div>
+
+            <h4>Technical Skills</h4>
+
+            <ul>
+                {% for skill in ai_result.technical_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Missing Skills</h4>
+
+            <ul>
+                {% for skill in ai_result.missing_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Experience Level</h4>
+
+            <p>{{ ai_result.experience_level }}</p>
+
+            <h4>Recommended Job Roles</h4>
+
+            <ul>
+                {% for role in ai_result.job_role_fit %}
+                    <li>{{ role }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Strengths</h4>
+
+            <ul>
+                {% for item in ai_result.strengths %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Improvement Suggestions</h4>
+
+            <ul>
+                {% for item in ai_result.improvements %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Professional Summary</h4>
+
+            <div class="alert alert-success">
+                {{ ai_result.summary }}
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+    {% if job_match %}
+
+    <hr>
+
+    <h2 class="text-warning">ATS Job Match Result</h2>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h4>Match Score</h4>
+
+            <div class="progress mb-4" style="height:30px;">
+
+                <div
+                    class="progress-bar bg-warning"
+                    role="progressbar"
+                    style="width: {{ job_match.match_score }}%;"
+                >
+                    {{ job_match.match_score }}
+                </div>
+
+            </div>
+
+            <h4>Matching Skills</h4>
+
+            <ul>
+                {% for skill in job_match.matching_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Missing Skills</h4>
+
+            <ul>
+                {% for skill in job_match.missing_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Recommendation</h4>
+
+            <div class="alert alert-info">
+                {{ job_match.recommendation }}
+            </div>
+
+            <h4>Job Fit Level</h4>
+
+            <div class="alert alert-warning">
+                {{ job_match.job_fit_level }}
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

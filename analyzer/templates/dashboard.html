@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Welcome {{ request.user.username }}
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h5>Total Resumes</h5>
+                    <h2>{{ total_resumes }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5>Highest ATS</h5>
+                    <h2>{{ highest_ats }}%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning shadow">
+                <div class="card-body">
+                    <h5>Average ATS</h5>
+                    <h2>{{ average_ats }}%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-dark shadow">
+                <div class="card-body">
+                    <h5>Latest Upload</h5>
+
+                    {% if latest_resume %}
+                        <small>{{ latest_resume.uploaded_at }}</small>
+                    {% else %}
+                        <small>No Resume</small>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h3>Your Resume History</h3>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Resume</th>
+                <th>ATS Score</th>
+                <th>Job Match</th>
+                <th>Uploaded On</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for resume in resumes %}
+
+            <tr>
+
+                <td>{{ resume.id }}</td>
+
+                <td>
+                    {{ resume.resume.name }}
+                </td>
+
+                <td>
+                    {{ resume.ats_score }}%
+                </td>
+
+                <td>
+                    {{ resume.job_match_score }}%
+                </td>
+
+                <td>
+                    {{ resume.uploaded_at }}
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+                    No Resume Uploaded Yet
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

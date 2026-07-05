@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+
+    <h1 class="display-4">
+        Welcome to AI ATS Resume Analyzer
+    </h1>
+
+    <p class="lead">
+        Upload your resume and get an AI-powered ATS score.
+    </p>
+
+    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+        Get Started
+    </a>
+
+</div>
+
+{% endblock %}
